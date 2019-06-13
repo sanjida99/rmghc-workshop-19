@@ -3,12 +3,14 @@ title: "Differential Expression: RNA-seq example"
 author: "`r getOption('author')`"
 date: "`r Sys.Date()`"
 params:
+  baseDir: ""
+  annotation_file: ""
   design: !r formula("~ Timepoint")
   contrasts: !r list(c(factor = "Timepoint",
         numerator = "90",
         denominator = "0"))
-  alpha: 0.01
-  lfc_threshold: 0.5
+  alpha: 0.1
+  lfc_threshold: 0
   data_dir: !r file.path("../data", Sys.Date())
   results_dir: !r file.path("../results", Sys.Date(), "differential_expression")
 editor_options:
@@ -16,6 +18,8 @@ editor_options:
 ---
 
 ```{r setup, message=FALSE}
+args = commandArgs(trailingOnly=TRUE)
+
 options(stringsAsFactors = FALSE)
 bcbioRNASeq::prepareRNASeqTemplate()
 source("_setup.R"); source("_utils.R"); source("_plotting.R")
@@ -37,7 +41,8 @@ invisible(mapply(
 ```{r import_counts, message=FALSE, warning=FALSE, results='hide'}
 
 # Read in gencode annotations
-gtf <- rtracklayer::import("../results/genome/gencode.vM21.annotation.gtf")
+gtf <- rtracklayer::import("/home/msmallegan/rmghc-workshop-19/results/genome/gencode.vM21.annotation.gtf")
+#gtf <- rtracklayer::import(params$annotation_file)
 
 
 
@@ -61,14 +66,14 @@ tx2gene <- gtfdf %>%
 
 
 # Read in sample annotations
-samples <- read.csv("../results/genome/sample_sheet.csv") %>%
+samples <- read.csv("sample_sheet.csv") %>%
   mutate(Timepoint = factor(Timepoint,
          levels = c("0", "90")))
 
 
 
 # Read in the salmon counts data.
-files <- file.path("../results", "salmon", samples$SampleID, "quant.sf")
+files <- file.path(samples$SampleID, "quant.sf")
 names(files) <- samples$SampleID
 txi.salmon <- tximport(files, type = "salmon", tx2gene = tx2gene)
 
@@ -124,7 +129,7 @@ After we perform the differential expression, we need to calculate variance-stab
 ```{r variance_stabilization}
 # Alternatively, can use `rlog()` here, but it is slower
 rld <- varianceStabilizingTransformation(dds)
-interestingGroups(rld) <- c("Condition")
+interestingGroups(rld) <- c("Timepoint")
 saveData(rld, dir = params$data_dir)
 ```
 
@@ -233,7 +238,7 @@ plotDEGHeatmap(res_list_shrunken[[1]], counts = rld, clusteringMethod = "ward.D2
 An MA plot compares transformed counts on `M` (log ratio) and `A` (mean average) scales [@Yang2002-sx].
 
 ```{r plot_ma}
-plotMA(res_list_shrunken[[6]], lfcThreshold = params$lfc_threshold, ntop = 15, gene2symbol = g2s)
+plotMA(res_list_shrunken[[1]], lfcThreshold = params$lfc_threshold, ntop = 15, gene2symbol = g2s)
 ```
 
 ### Volcano
@@ -241,55 +246,10 @@ plotMA(res_list_shrunken[[6]], lfcThreshold = params$lfc_threshold, ntop = 15, g
 A volcano plot compares significance (BH-adjusted *P* value) against fold change (log2) [@Cui2003-rn; @Li2014-ll].
 
 ```{r plot_volcano}
-plotVolcano(res_list_shrunken[[6]], lfcThreshold = params$lfc_threshold, ntop = 15, gene2symbol = g2s)
+plotVolcano(res_list_shrunken[[1]], lfcThreshold = params$lfc_threshold, ntop = 15, gene2symbol = g2s)
 ```
 
 
-
-# Results tables
-
-Subset the results into separate tables, containing all genes, differentially expressed genes in both directions, and directional tables.
-
-```{r results_tables, results="asis"}
-# Here we're creating subset tables of the DEGs, and adding the normalized
-# counts used by DESeq2 for the differential expression analysis.
-mdout <- capture.output(res_tbl_list <- mapply(
-    FUN = resultsTables,
-    results = res_list_shrunken,
-    MoreArgs = list(
-        counts = dds,
-        lfcThreshold = params$lfc,
-        summary = TRUE,
-        headerLevel = 2,
-        write = TRUE,
-        dir = params$results_dir,
-        dropboxDir = params$dropbox_dir,
-        rdsToken = params$dropbox_token
-    ),
-    SIMPLIFY = FALSE,
-    USE.NAMES = TRUE
-))
-
-# This is a little hack to force the dropbox links to autodownload.
-mdout <- gsub("dl=0", "dl=1", mdout)
-cat(paste(mdout,collapse="\n"))
-
-
-saveData(res_tbl_list, dir = params$data_dir)
-```
-
-
-## Top tables
-
-Only the top up- and down-regulated genes (arranged by log2 fold change) are shown.
-
-```{r top_tables, results="asis"}
-invisible(mapply(
-    FUN = topTables,
-    object = res_tbl_list,
-    MoreArgs = list(coding = FALSE)
-))
-```
 
 ```{r footer, child="_footer.Rmd"}
 ```
