@@ -2,8 +2,6 @@
 /*
  * pipeline input parameters
  */
-params.reads = "$baseDir/data/ggal/*_{1,2}.fq"
-params.transcriptome = "$baseDir/data/ggal/transcriptome.fa"
-params.multiqc = "$baseDir/multiqc"
+params.reads = "/data/fastq/*{*_R1,*_R2}.fastq.gz"
 
 println "reads: $params.reads"
