@@ -43,12 +43,10 @@ process make_transcriptome {
   input:
   file annotation from annotation_for_transcriptome
   file genome from genome
-  file sample_info from sample_info
 
   output:
   file "transcriptome.fa" into transcriptome
   file "gencode.vM21.annotation.gtf"
-  file "sample_sheet.csv"
 
   script:
   """
@@ -121,8 +119,7 @@ process count {
   publishDir 'results/feature_counts'
 
   input:
-  file annotation from annotation_for_count
-  set sample_id, file(bam) from mapped_for_count
+  set sample_id, file(bam), file(annotation) from mapped_for_count.combine(annotation_for_count)
 
   output:
   file '*.fCounts'
@@ -147,8 +144,7 @@ process salmon {
   publishDir 'results/salmon'
 
   input:
-  file transcript_fasta from transcriptome
-  set sample_id, file(bam) from mapped_transcriptome
+  set sample_id, file(bam), file(transcript_fasta) from mapped_transcriptome.combine(transcriptome)
 
   output:
   file("*") into salmon
@@ -283,18 +279,24 @@ process multiqc {
 
 
 
-// process differential_expression {
-//
-//   publishDir 'reports', mode: 'copy'
-//
-//   input:
-//   file sample_file from salmon_for_de.collect()
-//   file annotation from annotation_for_de
-//
-//   script:
-//   """
-//   Rscript -e 'rmarkdown::render("${baseDir}/bin/differential_expression.Rmd", \
-//     params = list(baseDir = "${baseDir}",\
-//                   annotation_file = "${annotation}"))'
-//   """
-// }
+process differential_expression {
+
+  publishDir 'reports', mode: 'copy'
+
+  input:
+  file sample_file from salmon_for_de.collect()
+  file annotation from annotation_for_de
+  file sample_info from sample_info
+
+  output:
+  file "*.html"
+
+  script:
+  """
+  cp ${baseDir}/bin/differential_expression.Rmd .
+  cp ${baseDir}/bin/*.R .
+  Rscript -e 'rmarkdown::render("differential_expression.Rmd", \
+    params = list(baseDir = "${baseDir}",\
+                  annotation_file = "${annotation}"))'
+  """
+}
