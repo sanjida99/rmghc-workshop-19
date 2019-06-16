@@ -15,6 +15,9 @@ params:
   results_dir: !r file.path("../results", Sys.Date(), "differential_expression")
 editor_options:
   chunk_output_type: console
+output:
+  html_document:
+    code_folding: "hide"
 ---
 
 ```{r setup, message=FALSE}
