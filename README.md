@@ -64,7 +64,31 @@ We previously built an image from the Singularity hub, we can also do the same f
 singularity build graphtool.img docker://tiagopeixoto/graph-tool:latest
 ```
 
+To help illustrate how you can execute a command that doesn't exist on your local machine, attempt to run samtools help dialog locally.
 
+```bash
+$ samtools --version
+```
+
+Now use the exec command to run the same command inside of the container
+
+```bash
+$ singularity exec /data/singularity/RinnLab_RNASeq.6.13.img samtools --version
+```
+
+Depending on how a local image is created, it will show you different outputs with the inspect command.
+
+```bash
+$ singularity inspect VerySerious.img
+$ singularity inspect -d VerySerious.img
+```
+
+You will see much more information on images built from Singularity files locally.
+
+```bash
+$ singularity inspect /data/singularity/RinnLab_RNASeq.6.13.img
+$ singularity inspect -d /data/singularity/RinnLab_RNASeq.6.13.img
+```
 
 ## Run the RNA-seq analysis pipeline with nextflow
 
