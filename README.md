@@ -1,6 +1,6 @@
 # Rocky Mountain Genomics Hackcon Workshop 2019
 
-An introduction to tools for reproducible analysis pipelines.
+An introduction to tools for reproducible analysis pipelines including Git, Singularity, and Nextflow.
 
 ## Prerequisites
 - a terminal/ssh client - we recommend [Git Bash](https://gitforwindows.org/) for windows; terminal for macOS (terminal comes with macOS, so no installation is necessary!)
