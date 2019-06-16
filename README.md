@@ -20,7 +20,7 @@ We setup an external mount for everyone to pull data from (mounted at /data).  T
 
 ## Set up your git repository
 
-1. Fork this repository so you have your own copy.  You can fork the repository by clicking on the 'fork' button in the top right.
+1. Fork this repository so you have your own copy.  You can fork the repository by clicking on the 'fork' button in the top right of the base page for the repository on GitHub.
 2. Ensure you're in your home directory: `cd ~`
 3. Clone your new repository on the Google cloud instance: `git clone https://github.com/YOURUSERNAME/rmghc-workshop-19.git` *Note: We're using https cloning so we don't have to generate and add ssh keys from the cloud instance*
 4. When you type `ls`, you should see a folder named for the repository
