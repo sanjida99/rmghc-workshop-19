@@ -29,11 +29,7 @@ We setup an external mount for everyone to pull data from (mounted at /data).  T
 ## Editing files
 We've set the default editor in the compute instances to nano, so if you type something like `git commit` without specifying a commit message on the command line, nano will open.  We find that this has a smaller learning curve.  We aren't doing much editing anyhow, but you can use whatever method you like for editing files.  If you're comfortable with vim, it's available also.  If you know how to rsync/scp files to and from your laptop and you want to sync changes that way and locally edit, that's fine!  
 
-## Interact with singularity
-
-Let's inspect the singularity container. What software is loaded on it?
-
-*Run something on singularity with singularity exec*
+## Interact with Singularity
 
 ## Run the RNA-seq analysis pipeline with nextflow
 
@@ -50,3 +46,4 @@ The cloud instances supplied for the workshop have a web server that's already u
 ## Add a process to run the differential expression RScript
 
 ## View the results of the RMarkdown script
+Just like our Nextflow reports, we can just copy our RMarkdown output files (which are HTML) to the web root on the cloud instance, then type http://yourip into your web browser on your laptop.
