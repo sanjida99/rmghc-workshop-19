@@ -3,8 +3,8 @@
 An introduction to tools for reproducible analysis pipelines.
 
 ## Prerequisites
-- a terminal/ssh client ([Git Bash](https://gitforwindows.org/) for windows; terminal macOS (already installed on macOS!))
-- a GitHub account
+- a terminal/ssh client - we recommend [Git Bash](https://gitforwindows.org/) for windows; terminal for macOS (terminal comes with macOS, so no installation is necessary!)
+- a GitHub account, with an SSH key added from the laptop you're bringing to the workshop
 
 ## Connect to your Google Cloud Compute Instance
 We will be giving everyone a Google Compute Engine instance to work with during the workshop.  IPs will be announced at the beginning of the workshop, and any SSH keys associated with your GitHub account will allow you to login!
@@ -13,7 +13,7 @@ We login using secure shell, a protocol for connecting to remote servers `ssh yo
 
 
 ## Copy the data that we'll be using during the workshop
-We setup an external mount for everyone to pull data from (mounted at /data).  The first thing you'll need to do is get a copy of this data to work with.  To keep things tidy, we'll make a new folder to put it in, first. *Note, the ~ is a shortcut for our home directory on unix-like systems*
+We setup an external mount for everyone to pull data from (mounted at /data).  The first thing you'll need to do is get a copy of this data to work with.  To keep things tidy, we'll make a new folder to put it in, first. *Note: the ~ is a shortcut for your home directory on unix-like systems*
 1. First, ensure you're in your home directory: `cd ~`
 2. Then, make a new directory called workshop to put the data in: `mkdir workshop`
 3. Lastly, copy the data from the mount: `cp -pr /data/* ~/workshop`
@@ -28,13 +28,7 @@ git clone https://github.com/YOURUSERNAME/rmghc-workshop-19.git
 ```
 
 
-## Edit files two ways
-
-Use your file manager to edit a file on your compute instance on your local machine.
-
-Use nano or vim on the command line to edit the same file. 
-
-Commit your changes and push to GitHub
+## Editing files
 
 ## Interact with singularity
 
@@ -52,6 +46,7 @@ nextflow run main.nf \
 ```
 
 ## View the pipeline reports in your browser
+The cloud instances supplied for the workshop have a web server that's already up and running, so we don't have to waste time copying files between the cloud instance and our laptops to view them!  Simply copy any pertinent HTML files you want to view to /srv/http and then type http://yourip into your web browser on your laptop!  
 
 ## Add a process to run the differential expression RScript
 
