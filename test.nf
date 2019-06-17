@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 params.name             = "RNA-seq"
 params.reads            = "/data/fastq/*{*_R1,*_R2}.fastq.gz"
-
+params.email		="adijnas@gmail.com"
 
 log.info "RNA-seq Pipeline"
 log.info "====================================="
