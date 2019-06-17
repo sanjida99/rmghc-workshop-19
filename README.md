@@ -140,8 +140,8 @@ Now let's run nextflow again and view the output in the `results` directory.
 ```bash
 nextflow run main.nf \
   -resume \
-  -with-report nextflow_report.html \
-  -with-dag flowchart.html
+  -with-report /srv/http/nextflow_report.html \
+  -with-dag /srv/http/flowchart.html
 ```
 
 ## View the pipeline reports in your browser
