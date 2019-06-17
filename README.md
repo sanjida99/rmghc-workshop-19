@@ -131,6 +131,8 @@ Now let's add in the actual command that we wan't to run so that the script look
   """
 ```
 
+Lastly, let's publish the results of this process to a directory that is more interpretable with `publishDir "results"` which we will place above the `input:` line.
+
 Now let's run nextflow again and view the output in the `results` directory.
 
 ## Run the RNA-seq analysis pipeline with nextflow
