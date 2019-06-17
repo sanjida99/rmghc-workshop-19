@@ -34,7 +34,7 @@ We've set the default editor in the compute instances to nano, so if you type so
 First let's take a look a what the basic options of Singularity are for
 
 ```bash
-singularity --help
+$ singularity --help
 ```
 
 Here you will see several of the commands we are going to use today: "run", "exec", "build", and "inspect"
@@ -42,26 +42,26 @@ Here you will see several of the commands we are going to use today: "run", "exe
 Build a local image directly from a remote repository.
 
 ```bash
-cd ~
-singularity build VerySerious.img shub://GodloveD/lolcow
+$ cd ~
+$ singularity build VerySerious.img shub://GodloveD/lolcow
 ```
 
 We now have a local Singularity image called VerySerious.img which can be executed. Use the "run" command to execute the pre-built function of the container.
 
 ```bash
-singularity run VerySerious.img
+$ singularity run VerySerious.img
 ```
 
 In this case, creating the image wasn't totally necessary and we can execute this same command pulling directly from the Singularity hub.
 
 ```bash
-singularity run shub://GodloveD/lolcow
+$ singularity run shub://GodloveD/lolcow
 ```
 
 We previously built an image from the Singularity hub, we can also do the same from the Docker hub.
 
 ```bash
-singularity build graphtool.img docker://tiagopeixoto/graph-tool:latest
+$ singularity build graphtool.img docker://tiagopeixoto/graph-tool:latest
 ```
 
 To help illustrate how you can execute a command that doesn't exist on your local machine, attempt to run samtools help dialog locally.
