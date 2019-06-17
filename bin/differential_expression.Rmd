@@ -168,7 +168,7 @@ Principal Component Analysis (PCA) is a statistical technique used to identify g
 
 Each point represents an RNA-seq sample. Samples with similar gene expression profiles are closer in the three-dimensional space.
 
-```{r plot_deg_pca, message=FALSE}
+```{r plot_deg_pca, message=FALSE, fig.width=10L, fig.height=6L}
 plotDEGPCA(res_list_shrunken[[1]], counts = rld)
 ```
 
@@ -181,10 +181,9 @@ This plot shows only differentially expressed genes on a per-sample basis. We ha
 plotDEGHeatmap(res_list_shrunken[[1]], counts = rld, clusteringMethod = "ward.D2", scale = "row")
 ```
 
-## Gene scatter plots {.tabset .tabset-fade .tabset-pills}
+## Gene scatter plots
 
 ### Mean average (MA)
-
 An MA plot compares transformed counts on `M` (log ratio) and `A` (mean average) scales [@Yang2002-sx].
 
 ```{r plot_ma}
