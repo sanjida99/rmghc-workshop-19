@@ -11,17 +11,14 @@ params:
         denominator = "0"))
   alpha: 0.1
   lfc_threshold: 0
-  data_dir: !r file.path("../data", Sys.Date())
-  results_dir: !r file.path("../results", Sys.Date(), "differential_expression")
-editor_options:
-  chunk_output_type: console
+  data_dir: !r file.path("data", Sys.Date())
+  results_dir: !r file.path("results", Sys.Date(), "differential_expression")
 output:
   html_document:
     code_folding: "hide"
 ---
 
 ```{r setup, message=FALSE, warning=FALSE}
-args = commandArgs(trailingOnly=TRUE)
 
 options(stringsAsFactors = FALSE)
 bcbioRNASeq::prepareRNASeqTemplate()
@@ -43,10 +40,7 @@ invisible(mapply(
 ```{r import_counts, message=FALSE, warning=FALSE, results='hide'}
 
 # Read in gencode annotations
-gtf <- rtracklayer::import("/home/msmallegan/rmghc-workshop-19/results/genome/gencode.vM21.annotation.gtf")
-#gtf <- rtracklayer::import(params$annotation_file)
-
-
+gtf <- rtracklayer::import(params$annotation_file)
 
 #TODO: put this parsing in a setup file to clean this up.
 names(gtf@elementMetadata@listData)[which(names(gtf@elementMetadata@listData) == "gene_id")] <-
@@ -57,7 +51,6 @@ names(gtf@elementMetadata@listData)[which(names(gtf@elementMetadata@listData) ==
   "geneBiotype"
 gtf@elementMetadata$id <- gtf@elementMetadata$geneID
 
-
 gtfdf <- gtf %>% as.data.frame()
 g2s <- as.data.frame(gtf@elementMetadata@listData) %>% select(geneID, geneName) %>% distinct()
 
@@ -65,20 +58,15 @@ tx2gene <- gtfdf %>%
   mutate(TXNAME = transcript_id, GENEID = geneID) %>%
   select(TXNAME, GENEID)
 
-
-
 # Read in sample annotations
 samples <- read.csv("sample_sheet.csv") %>%
   mutate(Timepoint = factor(Timepoint,
          levels = c("0", "90")))
 
-
-
 # Read in the salmon counts data.
 files <- file.path(samples$SampleID, "quant.sf")
 names(files) <- samples$SampleID
 txi.salmon <- tximport(files, type = "salmon", tx2gene = tx2gene)
-
 
 # Ensure that the ordering of the columns in the counts matrix
 # is the same as in the sample sheet.
@@ -119,7 +107,6 @@ names <- vapply(
     X = contrasts,
     FUN = function(x) {
         paste(x[[1]], x[[2]], "vs", x[[3]], sep = "_")
-
     },
     FUN.VALUE = "character"
 )
@@ -168,7 +155,7 @@ Principal Component Analysis (PCA) is a statistical technique used to identify g
 
 Each point represents an RNA-seq sample. Samples with similar gene expression profiles are closer in the three-dimensional space.
 
-```{r plot_deg_pca, message=FALSE, fig.width=4L, fig.height=6L}
+```{r plot_deg_pca, message=FALSE, fig.width=9L, fig.height=8L}
 plotDEGPCA(res_list_shrunken[[1]], counts = rld)
 ```
 
@@ -196,4 +183,23 @@ A volcano plot compares significance (BH-adjusted *P* value) against fold change
 
 ```{r plot_volcano, fig.width=7, fig.height=7}
 plotVolcano(res_list_shrunken[[1]], lfcThreshold = params$lfc_threshold, ntop = 15, gene2symbol = g2s)
+```
+
+***
+
+
+# R session information {.tabset}
+
+```{r session_info}
+markdownHeader("YAML params", level = 2)
+print(params)
+
+markdownHeader("`_setup.R`", level = 2)
+readr::read_lines("_setup.R") %>% writeLines()
+
+markdownHeader("`sessioninfo::session_info()`", level = 2)
+sessioninfo::session_info()
+
+markdownHeader("`utils::sessionInfo()`", level = 2)
+utils::sessionInfo()
 ```
