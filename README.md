@@ -90,6 +90,49 @@ $ singularity inspect /data/singularity/RinnLab_RNASeq.6.13.img
 $ singularity inspect -d /data/singularity/RinnLab_RNASeq.6.13.img
 ```
 
+## Get familiar with Nextflow
+
+The script test.nf has a few input parameters and nothing else. Let's run it using 
+
+```nextflow
+nextflow run test.nf
+```
+
+Now, let's modify the script to include another parameter called email and add a line to log the email. Then run it again. 
+
+We can view the output of the `reads` channel with the command `.println()`. 
+
+Since a channel can only be consumed once, let's remove the `println` statement in order to add a process. 
+
+Now let's create an empty process that will view the beginning of the read files. 
+
+```nextflow
+process view_reads {
+
+  input:
+  
+  output:
+  
+  script:
+  """
+  
+  """
+}
+```
+
+The input needs to be the `reads` channel and the output will be a text file which we can specify with `*.txt`. 
+
+Now let's add in the actual command that we wan't to run so that the script looks like this:
+
+```nextflow
+  script:
+  """
+  zcat ${read_files[[1]]} | head > ${sample_id}_reads.txt
+  """
+```
+
+Now let's run nextflow again and view the output in the `results` directory.
+
 ## Run the RNA-seq analysis pipeline with nextflow
 
 ```bash
