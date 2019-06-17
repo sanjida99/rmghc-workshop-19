@@ -284,7 +284,7 @@ process differential_expression {
   input:
   file annotation from annotation_for_de
   file salmon from salmon_for_de.collect()
-  file sample_info from sample_info
+  file sample_info from sample_info_for_de
 
   output:
   file "*.html"
