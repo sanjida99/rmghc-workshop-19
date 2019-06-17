@@ -168,7 +168,7 @@ Principal Component Analysis (PCA) is a statistical technique used to identify g
 
 Each point represents an RNA-seq sample. Samples with similar gene expression profiles are closer in the three-dimensional space.
 
-```{r plot_deg_pca, message=FALSE, fig.width=10L, fig.height=6L}
+```{r plot_deg_pca, message=FALSE, fig.width=4L, fig.height=6L}
 plotDEGPCA(res_list_shrunken[[1]], counts = rld)
 ```
 
@@ -177,7 +177,7 @@ plotDEGPCA(res_list_shrunken[[1]], counts = rld)
 
 This plot shows only differentially expressed genes on a per-sample basis. We have scaled the data by row and used the `ward.D2` method for clustering [@Ward1963-xf].
 
-```{r plot_deg_heatmap}
+```{r plot_deg_heatmap, fig.width=10L, fig.height=5L}
 plotDEGHeatmap(res_list_shrunken[[1]], counts = rld, clusteringMethod = "ward.D2", scale = "row")
 ```
 
@@ -186,7 +186,7 @@ plotDEGHeatmap(res_list_shrunken[[1]], counts = rld, clusteringMethod = "ward.D2
 ### Mean average (MA)
 An MA plot compares transformed counts on `M` (log ratio) and `A` (mean average) scales [@Yang2002-sx].
 
-```{r plot_ma}
+```{r plot_ma, fig.width=7, fig.height=7}
 plotMA(res_list_shrunken[[1]], lfcThreshold = params$lfc_threshold, ntop = 15, gene2symbol = g2s)
 ```
 
@@ -194,7 +194,7 @@ plotMA(res_list_shrunken[[1]], lfcThreshold = params$lfc_threshold, ntop = 15, g
 
 A volcano plot compares significance (BH-adjusted *P* value) against fold change (log2) [@Cui2003-rn; @Li2014-ll].
 
-```{r plot_volcano}
+```{r plot_volcano, fig.width=7, fig.height=7}
 plotVolcano(res_list_shrunken[[1]], lfcThreshold = params$lfc_threshold, ntop = 15, gene2symbol = g2s)
 ```
 
