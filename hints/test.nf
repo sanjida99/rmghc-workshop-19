@@ -22,10 +22,10 @@ process view_reads {
   set sample_id, file(read_files) from reads
 
   output:
-  file "first_reads.txt"
+  file "*.txt"
 
   script:
   """
-  zcat ${read_files[[1]]} | head > first_reads.txt
+  zcat ${read_files[[1]]} | head > ${sample_id}_reads.txt
   """
 }
