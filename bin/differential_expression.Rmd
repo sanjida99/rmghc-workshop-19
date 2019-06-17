@@ -197,8 +197,3 @@ A volcano plot compares significance (BH-adjusted *P* value) against fold change
 ```{r plot_volcano}
 plotVolcano(res_list_shrunken[[1]], lfcThreshold = params$lfc_threshold, ntop = 15, gene2symbol = g2s)
 ```
-
-
-
-```{r footer, child="_footer.Rmd"}
-```
