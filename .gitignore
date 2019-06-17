@@ -1,0 +1,7 @@
+.nextflow.log*
+.nextflow/*
+*.html*
+nextflow*
+reports/*
+results/*
+work/*
