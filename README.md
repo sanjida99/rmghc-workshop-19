@@ -104,5 +104,15 @@ The cloud instances supplied for the workshop have a web server that's already u
 
 ## Add a process to run the differential expression RScript
 
+The input channels to the process are annotation_for_de, salmon_for_de.collect(), and sample_info_for_de. The output that we care about is an html file. This can be specified to Nextflow with `file "*.html"`.
+
+```nextflow
+  script:
+  """
+  cp ${baseDir}/bin/*.R* .
+  Rscript -e 'rmarkdown::render("differential_expression.Rmd", params = list(annotation_file = "${annotation}"))'
+  """
+```
+
 ## View the results of the RMarkdown script
 Just like our Nextflow reports, we can just copy our RMarkdown output files (which are HTML) to the web root on the cloud instance, then type http://yourip into your web browser on your laptop.
