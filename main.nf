@@ -16,7 +16,7 @@ log.info "\n"
 
 annotation = Channel.fromPath("/data/annotation/*")
 genome = Channel.fromPath("/data/genome/*")
-sample_info = Channel.fromPath("/data/sample_info/*")
+sample_info_for_de = Channel.fromPath("/data/sample_info/*")
 index = Channel.fromPath("/data/index")
 reads = Channel.fromFilePairs(params.reads, size: -1)
   .ifEmpty { error "Can't find any reads matching: ${params.reads}" }
@@ -185,13 +185,13 @@ process sort_bam {
 
 
 
-process compile_fastqc {
+process collect_fastqc {
 
   input:
   file fastqc from fastqc.collect()
 
   output:
-  file "fastqc" into fastqc_compiled
+  file "fastqc" into fastqc_collected
 
   script:
   """
@@ -202,13 +202,13 @@ process compile_fastqc {
 
 
 
-process compile_star {
+process collect_star {
 
   input:
   file star from star.collect()
 
   output:
-  file "star" into star_compiled
+  file "star" into star_collected
 
   script:
   """
@@ -219,13 +219,13 @@ process compile_star {
 
 
 
-process compile_salmon {
+process collect_salmon {
 
   input:
   file salmon from salmon.collect()
 
   output:
-  file "salmon" into salmon_compiled
+  file "salmon" into salmon_collected
 
   script:
   """
@@ -236,13 +236,13 @@ process compile_salmon {
 
 
 
-process compile_counts {
+process collect_counts {
 
   input:
   file counts from counts.collect()
 
   output:
-  file "counts" into counts_compiled
+  file "counts" into counts_collected
 
   script:
   """
@@ -258,10 +258,10 @@ process multiqc {
   publishDir "results/multiqc"
 
   input:
-  file fastqc from fastqc_compiled
-  file star from star_compiled
-  file salmon from salmon_compiled
-  file counts from counts_compiled
+  file fastqc from fastqc_collected
+  file star from star_collected
+  file salmon from salmon_collected
+  file counts from counts_collected
 
   output:
   set file('*_multiqc_report.html'), file('*_data/*')
@@ -274,30 +274,5 @@ process multiqc {
     ${counts} \
     --title '${params.name}' \
     --cl_config "extra_fn_clean_exts: [ '_1', '_2' ]"
-  """
-}
-
-
-process differential_expression {
-
-  publishDir "reports"
-
-  input:
-  file annotation from annotation_for_de
-  file salmon from salmon_for_de.collect()
-  file sample_info from sample_info
-
-  output:
-  file "*.html"
-
-  script:
-  """
-  echo again
-  echo please
-  cp ${baseDir}/bin/differential_expression.Rmd .
-  cp ${baseDir}/bin/*.R .
-  Rscript -e 'rmarkdown::render("differential_expression.Rmd", \
-  params = list(baseDir = "${baseDir}",\
-                annotation_file = "${annotation}"))'
   """
 }
