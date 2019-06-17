@@ -91,44 +91,25 @@ stopifnot(all(rownames(samples) == colnames(txi.salmon$counts)))
 names(gtf) <- gtf$geneID
 gtf <- gtf[rownames(txi.salmon$counts)]
 stopifnot(all(names(gtf) == rownames(txi.salmon$counts)))
-```
 
-
-```{r create_DESeqDataSet, message=FALSE}
 # Create DESeq2 experiment objects.
 dds <- DESeq2::DESeqDataSetFromTximport(txi.salmon,
                                         colData   = samples,
                                         design    = params$design,
                                         rowRanges = gtf)
-```
 
-# Pre-filtering
-
-```{r prefilter}
 # Note that this criteria can be made more stringent
 keep <- rowSums(counts(dds)) >= 10
 dds <- dds[keep, ]
-```
 
-
-
-# Differential expression analysis
-
-```{r deseq, message=FALSE}
 dds <- DESeq(dds)
 saveData(dds, dir = params$data_dir)
-```
 
-# Variance stabilization
-
-```{r variance_stabilization, message=FALSE}
 # Alternatively, can use `rlog()` here, but it is slower
 rld <- varianceStabilizingTransformation(dds)
 interestingGroups(rld) <- c("Timepoint")
 saveData(rld, dir = params$data_dir)
-```
 
-```{r contrasts}
 # factor; numerator; denominator
 # levels(dds$genotype)
 # help("results", "DESeq2")
@@ -143,10 +124,7 @@ names <- vapply(
     FUN.VALUE = "character"
 )
 names(contrasts) <- names
-```
 
-
-```{r res_unshrunken, message=FALSE}
 res_list_unshrunken <- mapply(
     FUN = results,
     contrast = contrasts,
@@ -159,9 +137,7 @@ res_list_unshrunken <- mapply(
 )
 names(res_list_unshrunken) <- names
 saveData(res_list_unshrunken, dir = params$data_dir)
-```
 
-```{r res_shrunken, message=FALSE}
 # For `type` arguments other than "normal", `coef` argument is required.
 # Otherwise can use `contrast`, which is more intuitive and readable.
 # If using `coef` number, must match order in `resultsNames(dds)`.
